@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 public class TurnQueue {
 
     public static final String END_OF_TURN = "END_OF_TURN";
+    public static final String NEW_TURN = "NEW_TURN";
+
     private final Collection<Creature> creatures;
     private final Queue<Creature> creaturesQueue;
     private final PropertyChangeSupport observerSupport = new PropertyChangeSupport(this);
@@ -48,25 +50,12 @@ public class TurnQueue {
             endOfTurn();
         }
         currentCreature = creaturesQueue.poll();
-
-        if (currentCreature instanceof WarMachinesAbstract) {
-            handleWarMachineAction();
-        }
+        observerSupport.firePropertyChange(NEW_TURN,new Object(),currentCreature);
     }
 
     private void endOfTurn() {
         roundNumber++;
         initQueue();
         observerSupport.firePropertyChange(END_OF_TURN, roundNumber - 1, roundNumber);
-    }
-
-    private void handleWarMachineAction() {
-        WarMachinesAbstract warMachine = (WarMachinesAbstract) currentCreature;
-
-        if (warMachine.getSkillLevel() == 0) {
-            List<Creature> creatureList = new ArrayList<>(creatures);
-            warMachine.performAction(creatureList);
-            currentCreature = creaturesQueue.poll();
-        }
     }
 }

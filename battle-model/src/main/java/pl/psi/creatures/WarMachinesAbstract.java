@@ -1,20 +1,19 @@
 package pl.psi.creatures;
 
-import com.google.common.collect.Range;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-public abstract class WarMachinesAbstract extends Creature {
-
-    protected CreatureStatisticIf stats;
-    protected int amount;
-    protected double currentHp;
-    protected DamageCalculatorIf calculator;
+public abstract class WarMachinesAbstract extends AbstractCreature {
     protected Creature decorated;
     protected int skillLevel;
+    protected WarMachineActionType actionType;
 
+    public WarMachinesAbstract(Creature aDecorated,WarMachineActionType actionType) {
+        super(aDecorated);
+        this.actionType = actionType;
+    }
 
     @Override
     protected boolean canCounterAttack(final Creature aDefender) {
@@ -24,29 +23,7 @@ public abstract class WarMachinesAbstract extends Creature {
     public abstract void performAction(List<Creature> creatureList);
 
     @Override
-    double getAttack() {
-        return stats.getAttack();
+    public boolean isMachine() {
+        return true;
     }
-
-    @Override
-    public double getArmor() {
-        return stats.getArmor();
-    }
-
-    @Override
-    public String getName() {
-        return stats.getName();
-    }
-
-    @Override
-    public double getMoveRange() {
-        return stats.getMoveRange();
-    }
-
-    @Override
-    public Range<Integer> getDamage() {
-        return stats.getDamage();
-    }
-
-
 }

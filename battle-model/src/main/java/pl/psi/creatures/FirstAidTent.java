@@ -9,11 +9,8 @@ public class FirstAidTent extends WarMachinesAbstract {
 
     final private Random random = new Random();
 
-    public FirstAidTent(CreatureStatisticIf aStatistic, DamageCalculatorIf aCalculator, int aAmount, int aSkillLevel) {
-        stats = aStatistic;
-        calculator = aCalculator;
-        amount = aAmount;
-        skillLevel = aSkillLevel;
+    public FirstAidTent(Creature aDecorated, WarMachineActionType actionType) {
+        super(aDecorated, actionType);
     }
 
 
@@ -58,34 +55,4 @@ public class FirstAidTent extends WarMachinesAbstract {
         }
     }
 
-    public static class Builder {
-        private int amount = 1;
-        private int skillLevel;
-        private DamageCalculatorIf calculator = new DefaultDamageCalculator(new Random());
-        private CreatureStatisticIf statistic;
-
-        public FirstAidTent.Builder statistic(final CreatureStatisticIf aStatistic) {
-            statistic = aStatistic;
-            return this;
-        }
-
-        public FirstAidTent.Builder skillLevel(final int aSkillLevel) {
-            skillLevel = aSkillLevel;
-            return this;
-        }
-
-        public FirstAidTent.Builder amount(final int aAmount) {
-            amount = aAmount;
-            return this;
-        }
-
-        FirstAidTent.Builder calculator(final DamageCalculatorIf aCalc) {
-            calculator = aCalc;
-            return this;
-        }
-
-        public FirstAidTent build() {
-            return new FirstAidTent(statistic, calculator, amount, skillLevel);
-        }
-    }
 }

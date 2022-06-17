@@ -79,6 +79,10 @@ public class Creature implements PropertyChangeListener {
         return getAmount() > 0;
     }
 
+    public boolean isMachine() {
+        return false;
+    }
+
     protected void applyDamage(final Creature aDefender, final double aDamage) {
         aDefender.setCurrentHp((aDefender.getCurrentHp() - aDamage));
     }

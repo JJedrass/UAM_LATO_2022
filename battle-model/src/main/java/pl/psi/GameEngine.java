@@ -3,14 +3,19 @@ package pl.psi;
 import lombok.Getter;
 import pl.psi.creatures.Creature;
 import pl.psi.creatures.FirstAidTent;
+import pl.psi.creatures.WarMachineActionType;
+import pl.psi.creatures.WarMachinesAbstract;
 import pl.psi.spells.AreaDamageSpell;
 import pl.psi.spells.Spell;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.Math.ceil;
 
@@ -32,19 +37,17 @@ public class GameEngine {
         hero1 = aHero1;
         hero2 = aHero2;
         turnQueue = new TurnQueue(aHero1.getCreatures(), aHero2.getCreatures());
+        turnQueue.addObserver(TurnQueue.NEW_TURN, this::onNextTurn);
         board = new Board(aHero1.getCreatures(), aHero2.getCreatures());
     }
 
     public void attack(final Point point) {
-        board.getCreature(point)
-                .ifPresent(defender -> turnQueue.getCurrentCreature()
-                        .attack(defender));
+        board.getCreature(point).ifPresent(defender -> turnQueue.getCurrentCreature().attack(defender));
     }
 
     public void heal(final Point point) {
         FirstAidTent firstAidTent = (FirstAidTent) turnQueue.getCurrentCreature();
-        board.getCreature(point)
-                .ifPresent(firstAidTent::healCreature);
+        board.getCreature(point).ifPresent(firstAidTent::healCreature);
     }
 
     public boolean canMove(final Point aPoint) {
@@ -75,20 +78,25 @@ public class GameEngine {
     public boolean canHeal(final Point point) {
         Creature currentCreature = turnQueue.getCurrentCreature();
 
-        return currentCreature instanceof FirstAidTent
-                && board.getCreature(point)
-                .filter(creature -> creature.getHeroNumber() == currentCreature.getHeroNumber())
-                .isPresent();
+        Optional<Creature> otherCreatureOptional = board.getCreature(point);
+
+        if (currentCreature.isMachine() && otherCreatureOptional.isPresent()) {
+            Creature other = otherCreatureOptional.get();
+            WarMachinesAbstract warMachinesAbstract = (WarMachinesAbstract) currentCreature;
+
+            return warMachinesAbstract.getActionType() == WarMachineActionType.HEAL_CREATURE
+                    &&
+                    other.getHeroNumber() == currentCreature.getHeroNumber();
+        }
+        return false;
     }
 
     public void castSpell(final Point point, Spell spell) {
         switch (spell.getCategory()) {
             case FIELD:
-                board.getCreature(point)
-                        .ifPresent(defender -> {
-                            turnQueue.getCurrentCreature()
-                                    .castSpell(defender, spell);
-                        });
+                board.getCreature(point).ifPresent(defender -> {
+                    turnQueue.getCurrentCreature().castSpell(defender, spell);
+                });
                 break;
             case AREA:
                 List<Creature> creatureList = getCreaturesFromArea(point, (AreaDamageSpell) spell);
@@ -120,5 +128,31 @@ public class GameEngine {
         }
 
         return creatures;
+    }
+
+    private void onNextTurn(PropertyChangeEvent propertyChangeEvent) {
+        try {
+            if (propertyChangeEvent.getPropertyName().equals(TurnQueue.NEW_TURN)) {
+                Creature creature = (Creature) propertyChangeEvent.getNewValue();
+
+                if (creature.isMachine()) {
+                    handleWarAutoMachineAction((WarMachinesAbstract) creature,
+                            Stream.concat(
+                                    hero1.getCreatures().stream(),
+                                    hero2.getCreatures().stream()).collect(Collectors.toList())
+                    );
+                }
+            }
+        } catch (Exception e) {
+            //ignore
+        }
+    }
+
+    private void handleWarAutoMachineAction(WarMachinesAbstract warMachine, List<Creature> creatures) {
+        if (warMachine.getSkillLevel() == 0) {
+            List<Creature> creatureList = new ArrayList<>(creatures);
+            warMachine.performAction(creatureList);
+            turnQueue.next();
+        }
     }
 }
