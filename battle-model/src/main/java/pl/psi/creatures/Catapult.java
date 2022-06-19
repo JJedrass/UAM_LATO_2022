@@ -7,8 +7,8 @@ import java.util.List;
 public class Catapult extends WarMachinesAbstract {
 
 
-    public Catapult(Creature aDecorated, WarMachineActionType actionType) {
-        super(aDecorated, actionType);
+    public Catapult(Creature aDecorated, WarMachineActionType actionType, int aSkillLevel) {
+        super(aDecorated, actionType,aSkillLevel);
     }
 
     @Override

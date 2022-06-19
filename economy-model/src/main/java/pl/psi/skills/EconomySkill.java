@@ -4,6 +4,7 @@ import lombok.Getter;
 import pl.psi.Hero;
 import pl.psi.creatures.Creature;
 import pl.psi.creatures.CreatureStats;
+import pl.psi.hero.EconomyHero;
 
 import java.util.List;
 
@@ -30,12 +31,12 @@ public class EconomySkill {
     public void apply(List<Creature> aCreatures) {
         aCreatures.forEach(aCreature -> {
             CreatureStats statsToApply = this.upgradeCalculator.calculate(aCreature);
-            aCreature.buff(statsToApply);
+            aCreature.increaseStats(statsToApply);
         });
     }
 
-    public void apply(Hero aHero) {
-        this.upgradeCalculator.calculate(aHero);
+    public void apply(EconomyHero aHero) {
+        aHero.updateHeroStats(this.upgradeCalculator.calculate(aHero));
     }
 
     // method that will take spell as an argument

@@ -7,9 +7,10 @@ import java.util.List;
 public class Ballista extends WarMachinesAbstract {
 
 
-    public Ballista(Creature aDecorated, WarMachineActionType actionType) {
-        super(aDecorated, actionType);
+    public Ballista(Creature aDecorated, WarMachineActionType actionType, int aSkillLevel) {
+        super(aDecorated, actionType, aSkillLevel);
     }
+
 
     @Override
     public void performAction(List<Creature> creatureList) {

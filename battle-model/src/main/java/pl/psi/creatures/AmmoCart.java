@@ -8,8 +8,8 @@ import java.util.List;
 public class AmmoCart extends WarMachinesAbstract {
 
 
-    public AmmoCart(Creature aDecorated, WarMachineActionType actionType) {
-        super(aDecorated, actionType);
+    public AmmoCart(Creature aDecorated, WarMachineActionType actionType,int aSkillLevel) {
+        super(aDecorated, actionType, aSkillLevel);
     }
 
     @Override

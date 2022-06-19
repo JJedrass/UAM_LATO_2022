@@ -9,10 +9,12 @@ public abstract class WarMachinesAbstract extends AbstractCreature {
     protected Creature decorated;
     protected int skillLevel;
     protected WarMachineActionType actionType;
+    protected DamageCalculatorIf damageCalculator;
 
-    public WarMachinesAbstract(Creature aDecorated,WarMachineActionType actionType) {
+    public WarMachinesAbstract(Creature aDecorated,WarMachineActionType actionType,int skillLevel) {
         super(aDecorated);
         this.actionType = actionType;
+        this.skillLevel = skillLevel;
     }
 
     @Override
@@ -25,5 +27,11 @@ public abstract class WarMachinesAbstract extends AbstractCreature {
     @Override
     public boolean isMachine() {
         return true;
+    }
+
+    public void upgradeSkillLevel( int aNewLevel) {
+        if (aNewLevel < 4 && aNewLevel > 0) {
+            this.skillLevel = aNewLevel;
+        }
     }
 }

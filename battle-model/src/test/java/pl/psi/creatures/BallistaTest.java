@@ -66,6 +66,7 @@ public class BallistaTest {
         final WarMachinesAbstract ballista;
         ballista = new WarMachinesFactory().create(1, 1, new DefaultDamageCalculator(randomMock), 0);
         ballista.setHeroNumber(2);
+        System.out.println(ballista.canCounterAttack(attacker));
         attacker.attack(ballista);
 
         assertThat(attacker.getCurrentHp()).isEqualTo(100);

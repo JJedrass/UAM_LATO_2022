@@ -166,6 +166,7 @@ public class Creature implements PropertyChangeListener {
     }
 
     protected boolean canCounterAttack(final Creature aDefender) {
+        System.out.println(aDefender.canCounterAttack && aDefender.getCurrentHp() > 0);
         return aDefender.canCounterAttack && aDefender.getCurrentHp() > 0;
     }
 

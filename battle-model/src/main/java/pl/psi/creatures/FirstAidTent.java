@@ -9,8 +9,8 @@ public class FirstAidTent extends WarMachinesAbstract {
 
     final private Random random = new Random();
 
-    public FirstAidTent(Creature aDecorated, WarMachineActionType actionType) {
-        super(aDecorated, actionType);
+    public FirstAidTent(Creature aDecorated, WarMachineActionType actionType, int aSkillLevel) {
+        super(aDecorated, actionType, aSkillLevel);
     }
 
 
